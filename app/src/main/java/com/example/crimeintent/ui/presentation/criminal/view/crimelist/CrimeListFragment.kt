@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.crimeintent.R
+import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.ui.presentation.criminal.viewmodel.CrimeListViewModel
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
@@ -21,7 +22,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view = view)
         context?.let { setupRecyclerView(context = it) }
-
+        crimeListViewModel.crimes.observe(viewLifecycleOwner, ::updateAdapter)
     }
 
     private fun setupView(view: View) {
@@ -29,10 +30,12 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     }
 
     private fun setupRecyclerView(context: Context) {
-        adapter = CrimeAdapter(crimes = crimeListViewModel.crimes)
+        adapter = CrimeAdapter()
         crimeRecyclerView?.layoutManager = LinearLayoutManager(context)
         crimeRecyclerView?.adapter = adapter
     }
+
+    private fun updateAdapter(data: List<Crime>) {}
 
     companion object {
         fun newInstance(): CrimeListFragment {

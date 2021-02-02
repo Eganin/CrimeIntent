@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
 
-class CrimeAdapter(private val crimes: List<Crime>) : RecyclerView.Adapter<CrimeHolder>() {
+class CrimeAdapter : RecyclerView.Adapter<CrimeHolder>() {
+    private val crimes: MutableList<Crime> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CrimeHolder(
             itemView = LayoutInflater.from(parent.context)
@@ -18,11 +19,8 @@ class CrimeAdapter(private val crimes: List<Crime>) : RecyclerView.Adapter<Crime
 
     override fun getItemCount() = crimes.size
 
-    /*
-    override fun getItemViewType(position : Int) : Int{
-
+    fun bindCrime(data : List<Crime>){
+        crimes.addAll(data)
     }
-
-     */
 
 }
