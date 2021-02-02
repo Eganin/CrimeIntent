@@ -21,7 +21,7 @@ class CrimeRepository private constructor(context: Context) {
     fun getCrimeById(id: UUID) = crimeDao.getCrimeById(id = id)
 
     companion object {
-        private const val DATABASE_NAME = "crime-db"
+        private const val DATABASE_NAME = "crime-database"
         private var INSTANCE: CrimeRepository? = null
 
         fun initialize(context: Context) {

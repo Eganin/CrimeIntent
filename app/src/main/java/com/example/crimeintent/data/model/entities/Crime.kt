@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
-@Entity(tableName ="crimes")
+@Entity(tableName ="crime")
 data class Crime(
     @PrimaryKey
     val id: UUID = UUID.randomUUID(),

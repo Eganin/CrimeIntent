@@ -35,7 +35,10 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         crimeRecyclerView?.adapter = adapter
     }
 
-    private fun updateAdapter(data: List<Crime>) {}
+    private fun updateAdapter(data: List<Crime>) {
+        adapter?.bindCrime(data=data)
+        adapter?.notifyDataSetChanged()
+    }
 
     companion object {
         fun newInstance(): CrimeListFragment {
