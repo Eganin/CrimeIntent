@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.crimeintent.R
 import com.example.crimeintent.ui.presentation.criminal.utils.routing.Router
-import com.example.crimeintent.ui.presentation.criminal.view.CrimeFragment
+import com.example.crimeintent.ui.presentation.criminal.view.crimedetails.CrimeFragment
 
 class MainActivity : AppCompatActivity(), Router {
     override fun onCreate(savedInstanceState: Bundle?) {

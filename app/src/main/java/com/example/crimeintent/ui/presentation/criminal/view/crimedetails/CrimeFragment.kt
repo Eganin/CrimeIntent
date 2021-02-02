@@ -1,10 +1,9 @@
-package com.example.crimeintent.ui.presentation.criminal.view
+package com.example.crimeintent.ui.presentation.criminal.view.crimedetails
 
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -12,6 +11,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
+import com.example.crimeintent.ui.presentation.criminal.view.crimelist.CrimeListFragment
 
 class CrimeFragment : Fragment(R.layout.fragment_crime) {
 
@@ -31,10 +31,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-
-    }
 
     private fun setupViews(view: View) {
         titleField = view.findViewById(R.id.crime_title)
@@ -66,6 +62,12 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
         }
 
         titleField?.addTextChangedListener(titleWatcher)
+    }
+
+    companion object{
+        fun newInstance() : CrimeFragment {
+            return CrimeFragment()
+        }
     }
 
 }
