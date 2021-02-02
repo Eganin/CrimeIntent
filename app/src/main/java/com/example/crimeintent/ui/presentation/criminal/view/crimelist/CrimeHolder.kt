@@ -40,7 +40,7 @@ class CrimeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private fun parseDate(date: Date): String {
         val pattern = "MM.dd.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern)
-        return simpleDateFormat.format(date).toString()
+        return simpleDateFormat.format(date)
     }
 
 }
