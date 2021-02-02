@@ -12,7 +12,7 @@ import com.example.crimeintent.ui.presentation.criminal.viewmodel.CrimeListViewM
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private var crimeRecyclerView: RecyclerView? = null
-
+    private var adapter: CrimeAdapter? = null
     private val crimeListViewModel: CrimeListViewModel by lazy {
         ViewModelProvider(this)[CrimeListViewModel::class.java]
     }
@@ -20,15 +20,18 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view = view)
-        context?.let { setupRecyclerView(context= it) }
+        context?.let { setupRecyclerView(context = it) }
 
     }
 
     private fun setupView(view: View) {
         crimeRecyclerView = view.findViewById(R.id.crime_list)
     }
-    private fun setupRecyclerView(context : Context){
+
+    private fun setupRecyclerView(context: Context) {
+        adapter = CrimeAdapter(crimes = crimeListViewModel.crimes)
         crimeRecyclerView?.layoutManager = LinearLayoutManager(context)
+        crimeRecyclerView?.adapter = adapter
     }
 
     companion object {
