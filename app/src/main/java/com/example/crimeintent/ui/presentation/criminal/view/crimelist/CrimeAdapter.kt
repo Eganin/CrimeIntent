@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
 
-class CrimeAdapter : RecyclerView.Adapter<CrimeHolder>() {
+class CrimeAdapter(var callback: CrimeListFragment.Callbacks?=null) : RecyclerView.Adapter<CrimeHolder>() {
     private val crimes: MutableList<Crime> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CrimeHolder(
             itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_crime, parent, false)
+                .inflate(R.layout.list_item_crime, parent, false),
+            callback=callback
         )
 
     override fun onBindViewHolder(holder: CrimeHolder, position: Int) =

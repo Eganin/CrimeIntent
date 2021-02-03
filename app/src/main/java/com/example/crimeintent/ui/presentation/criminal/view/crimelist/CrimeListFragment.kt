@@ -36,7 +36,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         super.onAttach(context)
         if (context is Callbacks) {
             callback = context
-
+            adapter = CrimeAdapter().apply {callback=context}
         }
     }
 
@@ -50,7 +50,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     }
 
     private fun setupRecyclerView(context: Context) {
-        adapter = CrimeAdapter()
         crimeRecyclerView?.layoutManager = LinearLayoutManager(context)
         crimeRecyclerView?.adapter = adapter
     }

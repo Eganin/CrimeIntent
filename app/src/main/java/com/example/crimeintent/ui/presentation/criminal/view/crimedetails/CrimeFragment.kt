@@ -81,7 +81,12 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
     private fun updateUI() {
         titleField?.setText(crime.title)
         dateButton?.text = crime.date.toString()
-        solvedCheckBox?.isChecked = crime.isSolved
+        //solvedCheckBox?.isChecked = crime.isSolved
+        solvedCheckBox?.apply {
+            isChecked = crime.isSolved
+            //пропуск анимации
+            jumpDrawablesToCurrentState()
+        }
     }
 
     companion object {
