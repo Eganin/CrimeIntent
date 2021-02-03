@@ -7,8 +7,9 @@ import com.example.crimeintent.R
 import com.example.crimeintent.ui.presentation.criminal.utils.routing.Router
 import com.example.crimeintent.ui.presentation.criminal.view.crimedetails.CrimeFragment
 import com.example.crimeintent.ui.presentation.criminal.view.crimelist.CrimeListFragment
+import java.util.*
 
-class MainActivity : AppCompatActivity(), Router {
+class MainActivity : AppCompatActivity(), Router, CrimeListFragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,9 +27,13 @@ class MainActivity : AppCompatActivity(), Router {
         transaction.commit()
     }
 
-    override fun openCriminalTask() =
-        openFragment(fragment = CrimeFragment.newInstance(), addBackStack = true)
+    override fun openCriminalTask(crimeId: UUID) =
+        openFragment(fragment = CrimeFragment.newInstance(crimeId = crimeId), addBackStack = true)
 
     override fun openCriminalList() =
         openFragment(fragment = CrimeListFragment.newInstance(), addBackStack = true)
+
+    override fun onCrimeSelected(crimeId: UUID) {
+        openCriminalTask(crimeId = crimeId)
+    }
 }

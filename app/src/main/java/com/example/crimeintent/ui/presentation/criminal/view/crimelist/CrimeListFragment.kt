@@ -10,8 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.ui.presentation.criminal.viewmodel.CrimeListViewModel
+import java.util.*
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
+
+    interface Callbacks {
+        fun onCrimeSelected(crimeId: UUID)
+    }
+
+    private var callback: Callbacks? = null
     private var crimeRecyclerView: RecyclerView? = null
     private var adapter: CrimeAdapter? = null
     private val crimeListViewModel: CrimeListViewModel by lazy {
@@ -25,6 +32,19 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         crimeListViewModel.crimes.observe(viewLifecycleOwner, ::updateAdapter)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Callbacks) {
+            callback = context
+
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callback = null
+    }
+
     private fun setupView(view: View) {
         crimeRecyclerView = view.findViewById(R.id.crime_list)
     }
@@ -36,7 +56,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     }
 
     private fun updateAdapter(data: List<Crime>) {
-        adapter?.bindCrime(data=data)
+        adapter?.bindCrime(data = data)
         adapter?.notifyDataSetChanged()
     }
 

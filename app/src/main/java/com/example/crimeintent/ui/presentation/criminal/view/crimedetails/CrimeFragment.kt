@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.ui.presentation.criminal.view.crimelist.CrimeListFragment
+import java.util.*
 
 class CrimeFragment : Fragment(R.layout.fragment_crime) {
 
@@ -65,7 +66,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
     }
 
     companion object{
-        fun newInstance() : CrimeFragment {
+        fun newInstance(crimeId : UUID) : CrimeFragment {
             return CrimeFragment()
         }
     }

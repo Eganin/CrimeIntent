@@ -15,7 +15,8 @@ import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class CrimeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class CrimeHolder(itemView: View, callback: CrimeListFragment.Callbacks?) :
+    RecyclerView.ViewHolder(itemView) {
     private lateinit var crime: Crime
 
     private val titleTextView = itemView.findViewById<TextView>(R.id.crime_title)
@@ -24,8 +25,7 @@ class CrimeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     init {
         itemView.setOnClickListener {
-            Toast.makeText(itemView.context, "${crime.title} pressed!", Toast.LENGTH_SHORT)
-                .show()
+            callback?.onCrimeSelected(crimeId = crime.id)
         }
     }
 
