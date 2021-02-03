@@ -6,15 +6,25 @@ import java.util.*
 class CrimeTypeConverter {
 
     @TypeConverter
-    fun fromDate(date: Date?) = date?.time
+    fun fromDate(date: Date?): Long? {
+        return date?.time
+    }
 
     @TypeConverter
-    fun toDate(millisSinceEpoch: Long?) = millisSinceEpoch?.let { Date(it) }
+    fun toDate(millisSinceEpoch: Long?): Date? {
+        return millisSinceEpoch?.let {
+            Date(it)
+        }
+    }
 
     @TypeConverter
-    fun fromUUID(uuid: UUID?) = uuid?.toString()
+    fun toUUID(uuid: String?): UUID? {
+        return UUID.fromString(uuid)
+    }
 
     @TypeConverter
-    fun toUUID(uuid: String) = UUID.fromString(uuid)
+    fun fromUUID(uuid: UUID?): String? {
+        return uuid?.toString()
+    }
 
 }

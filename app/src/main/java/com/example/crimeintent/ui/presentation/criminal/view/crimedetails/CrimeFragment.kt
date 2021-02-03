@@ -45,6 +45,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
         })
     }
 
+    override fun onStop() {
+        super.onStop()
+        crimeDetailViewModel.saveCrime(crime = crime)
+    }
+
 
     private fun setupViews(view: View) {
         titleField = view.findViewById(R.id.crime_title)

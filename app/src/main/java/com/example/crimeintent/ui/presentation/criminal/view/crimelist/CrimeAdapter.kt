@@ -7,7 +7,7 @@ import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
 
 class CrimeAdapter(var callback: CrimeListFragment.Callbacks?=null) : RecyclerView.Adapter<CrimeHolder>() {
-    private val crimes: MutableList<Crime> = mutableListOf()
+    private var crimes: List<Crime> = emptyList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CrimeHolder(
             itemView = LayoutInflater.from(parent.context)
@@ -21,7 +21,7 @@ class CrimeAdapter(var callback: CrimeListFragment.Callbacks?=null) : RecyclerVi
     override fun getItemCount() = crimes.size
 
     fun bindCrime(data : List<Crime>){
-        crimes.addAll(data)
+        crimes = data
     }
 
 }
