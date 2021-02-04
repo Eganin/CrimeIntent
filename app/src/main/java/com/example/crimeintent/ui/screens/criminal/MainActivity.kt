@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity(), Router, CrimeListFragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        openCriminalList()
+        if (savedInstanceState == null) openCriminalList()
     }
 
     private fun openFragment(fragment: Fragment, addBackStack: Boolean = false) {

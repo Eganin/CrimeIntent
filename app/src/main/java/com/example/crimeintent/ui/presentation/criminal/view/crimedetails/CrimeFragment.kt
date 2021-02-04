@@ -16,7 +16,7 @@ import com.example.crimeintent.ui.presentation.criminal.view.crimelist.CrimeList
 import com.example.crimeintent.ui.presentation.criminal.viewmodel.CrimeDetailViewModel
 import java.util.*
 
-class CrimeFragment : Fragment(R.layout.fragment_crime) {
+class CrimeFragment : Fragment(R.layout.fragment_crime) , DatePickerFragment.Callbacks {
 
     private lateinit var crime: Crime
     private var titleField: EditText? = null
@@ -50,6 +50,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
         crimeDetailViewModel.saveCrime(crime = crime)
     }
 
+    override fun onDateSelected(date: Date) {
+        crime.date = date
+        updateUI()
+    }
+
 
     private fun setupViews(view: View) {
         titleField = view.findViewById(R.id.crime_title)
@@ -58,9 +63,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
     }
 
     private fun setupListeners() {
-        dateButton?.apply {
-            text = crime.date.toString()
-            isEnabled = false
+        dateButton?.setOnClickListener {
+            DatePickerFragment.newInstance(crime.date).apply {
+                setTargetFragment(this@CrimeFragment , REQUEST_DATE)
+                show(this@CrimeFragment.parentFragmentManager, DIALOG_DATE)
+            }
         }
 
         solvedCheckBox?.apply {
@@ -95,11 +102,14 @@ class CrimeFragment : Fragment(R.layout.fragment_crime) {
     }
 
     companion object {
+        private const val REQUEST_DATE = 0
+        private const val DIALOG_DATE = "DialogDate"
         private const val ARG_CRIME_ID = "crime_id"
         fun newInstance(crimeId: UUID): CrimeFragment {
             val args = Bundle().apply { putSerializable(ARG_CRIME_ID, crimeId) }
             return CrimeFragment().apply { arguments = args }
         }
     }
+
 
 }
