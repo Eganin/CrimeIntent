@@ -22,6 +22,7 @@ class CrimeHolder(itemView: View, callback: CrimeListFragment.Callbacks?) :
     private val titleTextView = itemView.findViewById<TextView>(R.id.crime_title)
     private val dateTextView = itemView.findViewById<TextView>(R.id.crime_date)
     private val solvedImageView = itemView.findViewById<ImageView>(R.id.crime_solved)
+    private val timeTextView = itemView.findViewById<TextView>(R.id.crime_time)
 
     init {
         itemView.setOnClickListener {
@@ -33,6 +34,7 @@ class CrimeHolder(itemView: View, callback: CrimeListFragment.Callbacks?) :
         this.crime = crime
         titleTextView.text = crime.title
         dateTextView.text = parseDate(date = crime.date)
+        timeTextView.text = crime.time
         solvedImageView.isVisible = crime.isSolved
     }
 
