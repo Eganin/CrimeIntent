@@ -11,7 +11,6 @@ class DatePickerFragment : DialogFragment() {
 
     interface Callbacks {
         fun onDateSelected(date: Date)
-
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
