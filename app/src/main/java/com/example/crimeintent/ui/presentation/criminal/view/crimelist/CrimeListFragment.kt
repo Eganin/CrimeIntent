@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.ui.presentation.criminal.viewmodel.CrimeListViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
@@ -24,6 +26,8 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private var callback: Callbacks? = null
     private var crimeRecyclerView: RecyclerView? = null
     private var adapter: CrimeAdapter? = null
+    private var coordinatorLayout: CoordinatorLayout? = null
+
     private val crimeListViewModel: CrimeListViewModel by lazy {
         ViewModelProvider(this)[CrimeListViewModel::class.java]
     }
@@ -38,6 +42,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         setupView(view = view)
         context?.let { setupRecyclerView(context = it) }
         crimeListViewModel.crimes.observe(viewLifecycleOwner, ::updateAdapter)
+        if (savedInstanceState == null && adapter?.itemCount == 0) showSnackBar(text = "Crimes is not exists")
     }
 
     override fun onAttach(context: Context) {
@@ -53,6 +58,13 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         callback = null
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        crimeRecyclerView = null
+        coordinatorLayout = null
+        crimeRecyclerView?.adapter = null
+    }
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.new_crime -> {
             val crime = Crime()
@@ -60,7 +72,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
             callback?.onCrimeSelected(crimeId = crime.id)
             true
         }
-        else ->super.onOptionsItemSelected(item)
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -70,6 +82,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     private fun setupView(view: View) {
         crimeRecyclerView = view.findViewById(R.id.crime_list)
+        coordinatorLayout = view.findViewById(R.id.main_coordinator)
     }
 
     private fun setupRecyclerView(context: Context) {
@@ -81,6 +94,10 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         adapter?.bindCrime(data = data)
         adapter?.notifyDataSetChanged()
     }
+
+    private fun showSnackBar(text: String) =
+        coordinatorLayout?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
+
 
     companion object {
         fun newInstance(): CrimeListFragment {
