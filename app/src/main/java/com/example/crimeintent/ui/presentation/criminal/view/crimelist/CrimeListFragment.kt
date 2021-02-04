@@ -2,6 +2,9 @@ package com.example.crimeintent.ui.presentation.criminal.view.crimelist
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +28,11 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         ViewModelProvider(this)[CrimeListViewModel::class.java]
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)// вызов меню
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view = view)
@@ -36,13 +44,28 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         super.onAttach(context)
         if (context is Callbacks) {
             callback = context
-            adapter = CrimeAdapter().apply {callback=context}
+            adapter = CrimeAdapter().apply { callback = context }
         }
     }
 
     override fun onDetach() {
         super.onDetach()
         callback = null
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.new_crime -> {
+            val crime = Crime()
+            crimeListViewModel.addCrime(crime = crime)
+            callback?.onCrimeSelected(crimeId = crime.id)
+            true
+        }
+        else ->super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_crime_list, menu)
     }
 
     private fun setupView(view: View) {

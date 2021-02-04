@@ -4,6 +4,8 @@ package com.example.crimeintent.ui.presentation.criminal.view.crimedetails
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -69,7 +71,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         timeButton = null
         solvedCheckBox = null
     }
-
 
     private fun setupViews(view: View) {
         titleField = view.findViewById(R.id.crime_title)
