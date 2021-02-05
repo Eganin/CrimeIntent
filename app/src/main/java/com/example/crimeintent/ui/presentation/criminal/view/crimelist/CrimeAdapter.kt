@@ -2,9 +2,11 @@ package com.example.crimeintent.ui.presentation.criminal.view.crimelist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
+import com.example.crimeintent.ui.presentation.criminal.utils.diffutill.DiffUtillCallback
 
 class CrimeAdapter(var callback: CrimeListFragment.Callbacks?=null) : RecyclerView.Adapter<CrimeHolder>() {
     private var crimes: List<Crime> = emptyList()
@@ -22,6 +24,9 @@ class CrimeAdapter(var callback: CrimeListFragment.Callbacks?=null) : RecyclerVi
 
     fun bindCrime(data : List<Crime>){
         crimes = data
+        val diffUtillCallback = DiffUtillCallback(oldList = crimes,newList = data)
+        val diffResult : DiffUtil.DiffResult = DiffUtil.calculateDiff(diffUtillCallback)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun getCrimes() = crimes
