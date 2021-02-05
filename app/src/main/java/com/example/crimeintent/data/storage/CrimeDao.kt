@@ -10,6 +10,7 @@ interface CrimeDao {
     @Query("SELECT * FROM crime")
     fun getAllCrimes(): LiveData<List<Crime>>
 
+
     @Query("SELECT * FROM crime WHERE id = :id")
     fun getCrimeById(id: UUID): LiveData<Crime?>
 

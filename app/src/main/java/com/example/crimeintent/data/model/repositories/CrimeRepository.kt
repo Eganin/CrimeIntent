@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.data.storage.CrimeDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
-import java.util.concurrent.Executors
-
 class CrimeRepository private constructor(context: Context) {
 
 
@@ -17,17 +18,22 @@ class CrimeRepository private constructor(context: Context) {
     ).build()
 
     private val crimeDao = database.crimesDao
-    private val executor = Executors.newSingleThreadExecutor()
+
+    private val dispatcher = Dispatchers.IO
 
     fun getAllCrimes() = crimeDao.getAllCrimes()
 
     fun getCrimeById(id: UUID) = crimeDao.getCrimeById(id = id)
 
-    fun updateCrime(crime: Crime) = executor.execute { crimeDao.updateCrime(crime=crime) }
+    suspend fun updateCrime(crime: Crime) =
+        withContext(dispatcher) { crimeDao.updateCrime(crime = crime) }
 
-    fun addCrime(crime: Crime) = executor.execute { crimeDao.addCrime(crime=crime) }
+    suspend fun addCrime(crime: Crime) =
+        withContext(dispatcher) { crimeDao.addCrime(crime = crime) }
 
-    fun deleteCrime(crime : Crime) = executor.execute { crimeDao.deleteCrime(crime=crime)}
+    suspend fun deleteCrime(crime: Crime) =
+        withContext(dispatcher) { crimeDao.deleteCrime(crime = crime) }
+
 
     companion object {
         private const val DATABASE_NAME = "crime-database"

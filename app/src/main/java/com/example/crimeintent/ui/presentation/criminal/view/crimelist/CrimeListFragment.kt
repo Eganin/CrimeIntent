@@ -44,7 +44,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         context?.let { setupRecyclerView(context = it) }
         setupTouchListener()
         crimeListViewModel.crimes.observe(viewLifecycleOwner, ::updateAdapter)
-        if (savedInstanceState == null && adapter?.itemCount == 0) showSnackBar(text = "Crimes is not exists")
+
     }
 
     override fun onAttach(context: Context) {
@@ -95,9 +95,10 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private fun updateAdapter(data: List<Crime>) {
         adapter?.bindCrime(data = data)
         adapter?.notifyDataSetChanged()
+        if (adapter?.itemCount==0) showSnackBar(text = "Crimes is not exists")
     }
 
-    private fun showSnackBar(text: String) =
+    private fun showSnackBar(text: String = "") =
         coordinatorLayout?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
 
     private fun setupTouchListener() {

@@ -1,11 +1,9 @@
 package com.example.crimeintent.ui.presentation.criminal.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.data.model.repositories.CrimeRepository
+import kotlinx.coroutines.launch
 import java.util.*
 
 class CrimeDetailViewModel : ViewModel() {
@@ -21,5 +19,5 @@ class CrimeDetailViewModel : ViewModel() {
         crimeIdLiveData.value = crimeId
     }
 
-    fun saveCrime(crime: Crime) = crimeRepository.updateCrime(crime)
+    fun saveCrime(crime: Crime) = viewModelScope.launch { crimeRepository.updateCrime(crime) }
 }
