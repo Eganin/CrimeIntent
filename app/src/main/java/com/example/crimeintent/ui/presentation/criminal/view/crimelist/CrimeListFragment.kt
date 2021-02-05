@@ -9,6 +9,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.crimeintent.R
@@ -41,6 +42,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view = view)
         context?.let { setupRecyclerView(context = it) }
+        setupTouchListener()
         crimeListViewModel.crimes.observe(viewLifecycleOwner, ::updateAdapter)
         if (savedInstanceState == null && adapter?.itemCount == 0) showSnackBar(text = "Crimes is not exists")
     }
@@ -97,6 +99,26 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     private fun showSnackBar(text: String) =
         coordinatorLayout?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
+
+    private fun setupTouchListener() {
+        ItemTouchHelper(object :
+            ItemTouchHelper.SimpleCallback(
+                0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ) = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val crime = adapter?.getCrimes()?.get(viewHolder.adapterPosition)
+                crime?.let { crimeListViewModel.deleteCrime(it) }
+            }
+
+        }).attachToRecyclerView(crimeRecyclerView)
+    }
 
 
     companion object {

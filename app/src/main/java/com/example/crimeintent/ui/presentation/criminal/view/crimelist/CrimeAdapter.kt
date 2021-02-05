@@ -24,4 +24,6 @@ class CrimeAdapter(var callback: CrimeListFragment.Callbacks?=null) : RecyclerVi
         crimes = data
     }
 
+    fun getCrimes() = crimes
+
 }

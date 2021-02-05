@@ -23,9 +23,11 @@ class CrimeRepository private constructor(context: Context) {
 
     fun getCrimeById(id: UUID) = crimeDao.getCrimeById(id = id)
 
-    fun updateCrime(crime: Crime) = executor.execute { crimeDao.updateCrime(crime) }
+    fun updateCrime(crime: Crime) = executor.execute { crimeDao.updateCrime(crime=crime) }
 
-    fun addCrime(crime: Crime) = executor.execute { crimeDao.addCrime(crime) }
+    fun addCrime(crime: Crime) = executor.execute { crimeDao.addCrime(crime=crime) }
+
+    fun deleteCrime(crime : Crime) = executor.execute { crimeDao.deleteCrime(crime=crime)}
 
     companion object {
         private const val DATABASE_NAME = "crime-database"

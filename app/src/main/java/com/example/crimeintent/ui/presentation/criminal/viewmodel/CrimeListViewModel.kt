@@ -10,4 +10,6 @@ class CrimeListViewModel : ViewModel() {
     val crimes = repository.getAllCrimes()
 
     fun addCrime(crime : Crime)= repository.addCrime(crime=crime)
+
+    fun deleteCrime(crime : Crime)=repository.deleteCrime(crime=crime)
 }
