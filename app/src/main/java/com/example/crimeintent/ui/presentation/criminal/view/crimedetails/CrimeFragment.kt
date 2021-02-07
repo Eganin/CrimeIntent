@@ -34,6 +34,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         crime = Crime()
+        println(arguments.toString())
         val crimeId = arguments?.getSerializable(ARG_CRIME_ID) as UUID
         crimeDetailViewModel.loadCrime(crimeId = crimeId)
     }
@@ -130,10 +131,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         private const val REQUEST_DATE = 0
         private const val DIALOG_DATE = "DialogDate"
         private const val DIALOG_TIME = "DialogTime"
-        private const val ARG_CRIME_ID = "crime_id"
-        fun newInstance(crimeId: UUID): CrimeFragment {
-            val args = Bundle().apply { putSerializable(ARG_CRIME_ID, crimeId) }
-            return CrimeFragment().apply { arguments = args }
-        }
+        const val ARG_CRIME_ID = "crime_id"
     }
 }

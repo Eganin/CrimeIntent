@@ -96,7 +96,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         adapter?.bindCrime(data = data)
         adapter?.notifyDataSetChanged()
         if (adapter?.itemCount==0) showSnackBar(text = "Crimes is not exists")
-    }
+    } 
 
     private fun showSnackBar(text: String = "") =
         coordinatorLayout?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
@@ -121,10 +121,4 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         }).attachToRecyclerView(crimeRecyclerView)
     }
 
-
-    companion object {
-        fun newInstance(): CrimeListFragment {
-            return CrimeListFragment()
-        }
-    }
 }

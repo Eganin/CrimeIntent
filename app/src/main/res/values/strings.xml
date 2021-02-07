@@ -5,4 +5,6 @@
     <string name="crime_details">Details</string>
     <string name="cirme_solved">Solved</string>
     <string name="new_crime">New Crime</string>
+    <string name="choose_suspect">Choose suspect</string>
+    <string name="send_crime_report">Send crime report</string>
 </resources>
