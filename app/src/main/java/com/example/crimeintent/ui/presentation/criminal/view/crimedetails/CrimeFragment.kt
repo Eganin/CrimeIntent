@@ -1,8 +1,13 @@
 package com.example.crimeintent.ui.presentation.criminal.view.crimedetails
 
 
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 
@@ -76,6 +81,14 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         suspectButton = null
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            resultCode != Activity.RESULT_OK -> return
+            requestCode == REQUEST_CONTACT && data != null -> getSuspect(data = data)
+
+        }
+    }
+
     private fun setupViews(view: View) {
         titleField = view.findViewById(R.id.crime_title)
         dateButton = view.findViewById(R.id.crime_date)
@@ -123,9 +136,25 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
             Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getCrimeReport())
-                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_suspect))
-            }.also { intent -> startActivity(intent) }
+                putExtra(
+                    Intent.EXTRA_SUBJECT, getString(R.string.crime_report_suspect)
+                        .format(crime.suspect)
+                )
+            }.also { intent ->
+                val chooseIntent = Intent.createChooser(intent, getString(R.string.send_report))
+                startActivity(chooseIntent)
+            }
         }
+
+        suspectButton?.apply {
+            val contactIntent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+            setOnClickListener {
+                startActivityForResult(contactIntent, REQUEST_CONTACT)
+            }
+            isEnabled = checkIntent(intent = contactIntent)
+
+        }
+
     }
 
     private fun updateUI() {
@@ -137,6 +166,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
             //пропуск анимации
             jumpDrawablesToCurrentState()
         }
+        if (crime.suspect.isNotEmpty()) suspectButton?.text = crime.suspect
     }
 
     private fun getCrimeReport(): String {
@@ -153,6 +183,35 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         return getString(R.string.crime_report, crime.title, dateTime, solved, suspect)
     }
 
+    private fun getSuspect(data: Intent?) {
+        val contactUri: Uri? = data?.data
+        // поле имени для данных
+        val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+        val cursor = requireActivity().contentResolver.query(
+            contactUri!!,
+            queryFields,
+            null,
+            null,
+            null
+        )
+        cursor?.use {
+            if (it.count == 0) return
+            it.moveToNext()
+            crime.apply {
+                suspect = it.getString(0)
+            }
+            crimeDetailViewModel.saveCrime(crime = crime)
+            suspectButton?.text = crime.suspect
+        }
+    }
+
+    private fun checkIntent(intent: Intent) : Boolean {
+        val packageManager: PackageManager = requireActivity().packageManager
+        val resolvedActivity: ResolveInfo? =
+            packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        return resolvedActivity != null
+    }
+
     companion object {
         private const val REQUEST_TIME = 1
         private const val REQUEST_DATE = 0
@@ -160,5 +219,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         private const val DIALOG_TIME = "DialogTime"
         const val ARG_CRIME_ID = "crime_id"
         private const val DATE_FORMAT = "EEE, MMM, dd"
+        private const val REQUEST_CONTACT = 2
     }
 }
