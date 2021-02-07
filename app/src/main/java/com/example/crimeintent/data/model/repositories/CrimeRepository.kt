@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.data.storage.CrimeDatabase
+import com.example.crimeintent.data.storage.migration_1_2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,7 +16,8 @@ class CrimeRepository private constructor(context: Context) {
         context.applicationContext,
         CrimeDatabase::class.java,
         DATABASE_NAME
-    ).build()
+    ).addMigrations(migration_1_2)
+        .build()
 
     private val crimeDao = database.crimesDao
 
