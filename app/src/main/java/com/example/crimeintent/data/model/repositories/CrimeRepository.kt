@@ -1,6 +1,9 @@
 package com.example.crimeintent.data.model.repositories
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.ContactsContract
 import androidx.room.Room
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.data.storage.CrimeDatabase
@@ -9,7 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
-class CrimeRepository private constructor(context: Context) {
+
+class CrimeRepository private constructor(val context: Context) {
 
 
     private val database: CrimeDatabase = Room.databaseBuilder(
@@ -36,6 +40,28 @@ class CrimeRepository private constructor(context: Context) {
     suspend fun deleteCrime(crime: Crime) =
         withContext(dispatcher) { crimeDao.deleteCrime(crime = crime) }
 
+    fun getSuspect(data: Intent?) : String? {
+        var result : String?=null
+        val contactUri: Uri? = data?.data
+        // поле имени для данных
+        val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+        val cursor = context.contentResolver.query(
+            contactUri!!,
+            queryFields,
+            null,
+            null,
+            null
+        )
+        cursor?.use {
+            if (it.count != 0){
+                it.moveToNext()
+                result = it.getString(0)
+            }
+        }
+
+        return result
+    }
+
 
     companion object {
         private const val DATABASE_NAME = "crime-database"
@@ -47,8 +73,8 @@ class CrimeRepository private constructor(context: Context) {
             }
         }
 
-        fun getRepository(): CrimeRepository {
-            return INSTANCE ?: throw IllegalStateException("CrimeRepository not initalizated")
-        }
+        fun getRepository() =
+            INSTANCE ?: throw IllegalStateException("CrimeRepository not initalizated")
+
     }
 }

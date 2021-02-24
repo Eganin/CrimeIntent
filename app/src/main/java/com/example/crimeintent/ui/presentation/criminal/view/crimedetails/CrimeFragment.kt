@@ -1,6 +1,5 @@
 package com.example.crimeintent.ui.presentation.criminal.view.crimedetails
 
-
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,7 +9,6 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
-
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -54,6 +52,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
                 updateUI()
             }
         })
+
+        crimeDetailViewModel.crimeSuspect.observe(viewLifecycleOwner ,this::updateSuspect)
     }
 
     override fun onStop() {
@@ -183,26 +183,15 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         return getString(R.string.crime_report, crime.title, dateTime, solved, suspect)
     }
 
-    private fun getSuspect(data: Intent?) {
-        val contactUri: Uri? = data?.data
-        // поле имени для данных
-        val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
-        val cursor = requireActivity().contentResolver.query(
-            contactUri!!,
-            queryFields,
-            null,
-            null,
-            null
-        )
-        cursor?.use {
-            if (it.count == 0) return
-            it.moveToNext()
-            crime.apply {
-                suspect = it.getString(0)
-            }
-            crimeDetailViewModel.saveCrime(crime = crime)
-            suspectButton?.text = crime.suspect
+    private fun getSuspect(data: Intent?) = crimeDetailViewModel.getSuspect(data=data)
+
+
+    private fun updateSuspect(data : String?){
+        crime.apply {
+            suspect = data ?:""
         }
+        crimeDetailViewModel.saveCrime(crime = crime)
+        suspectButton?.text = crime.suspect
     }
 
     private fun checkIntent(intent: Intent) : Boolean {

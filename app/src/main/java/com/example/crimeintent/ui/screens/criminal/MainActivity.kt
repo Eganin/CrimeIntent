@@ -2,7 +2,6 @@ package com.example.crimeintent.ui.screens.criminal
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.crimeintent.R

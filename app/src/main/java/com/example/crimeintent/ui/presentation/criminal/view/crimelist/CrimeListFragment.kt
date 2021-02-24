@@ -95,7 +95,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private fun updateAdapter(data: List<Crime>) {
         adapter?.bindCrime(data = data)
         adapter?.notifyDataSetChanged()
-        if (adapter?.itemCount==0) showSnackBar(text = "Crimes is not exists")
+        if (adapter?.itemCount==0) showSnackBar(text = getString(R.string.crimes_not_exists))
     } 
 
     private fun showSnackBar(text: String = "") =
