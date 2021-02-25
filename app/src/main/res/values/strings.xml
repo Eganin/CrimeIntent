@@ -15,4 +15,7 @@
     <string name="crime_report_subject">CriminalIntent Crime Report</string>
     <string name="send_report">Send crime report via</string>
     <string name="crimes_not_exists">Crimes is not exists</string>
+    <string name="back_text">Back</string>
+    <string name="back_image"><![CDATA[<]]></string>
+    <string name="detail_crime_photo">detail crime photo</string>
 </resources>

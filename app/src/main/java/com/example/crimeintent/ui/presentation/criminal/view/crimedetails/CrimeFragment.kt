@@ -117,6 +117,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         }
     }
 
+
+
     private fun setupViews(view: View) {
         titleField = view.findViewById(R.id.crime_title)
         dateButton = view.findViewById(R.id.crime_date)
@@ -209,6 +211,13 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
             }
         }
 
+        photoView?.setOnClickListener {
+            CrimeImageFragment.newInstance(path =photoFile.path).apply {
+                setTargetFragment(this@CrimeFragment, REQUEST_FULL_IMAGE)
+                show(this@CrimeFragment.parentFragmentManager, DIALOG_FULL_IMAGE)
+            }
+        }
+
     }
 
     private fun updateUI() {
@@ -269,10 +278,13 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         private const val REQUEST_TIME = 1
         private const val REQUEST_DATE = 0
         private const val REQUEST_PHOTO = 3
+        private const val REQUEST_FULL_IMAGE = 4
+        private const val DIALOG_FULL_IMAGE = "DialogFullImage"
         private const val DIALOG_DATE = "DialogDate"
         private const val DIALOG_TIME = "DialogTime"
         const val ARG_CRIME_ID = "crime_id"
         private const val DATE_FORMAT = "EEE, MMM, dd"
         private const val REQUEST_CONTACT = 2
     }
+
 }
