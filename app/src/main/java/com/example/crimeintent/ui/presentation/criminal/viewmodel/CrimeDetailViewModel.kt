@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.data.model.repositories.CrimeRepository
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 
 class CrimeDetailViewModel : ViewModel() {
@@ -29,4 +30,6 @@ class CrimeDetailViewModel : ViewModel() {
             _crimeSuspect.value = crimeRepository.getSuspect(it)
         }
     }
+
+    fun getPhotoFile(crime: Crime): File = crimeRepository.getPhotoFile(crime=crime)
 }

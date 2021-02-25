@@ -1,5 +1,6 @@
 package com.example.crimeintent.data.model.repositories
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -8,12 +9,12 @@ import androidx.room.Room
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.data.storage.CrimeDatabase
 import com.example.crimeintent.data.storage.migration_1_2
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.*
 
-class CrimeRepository private constructor(val context: Context) {
+class CrimeRepository private constructor(private val context: Context) {
 
 
     private val database: CrimeDatabase = Room.databaseBuilder(
@@ -26,6 +27,8 @@ class CrimeRepository private constructor(val context: Context) {
     private val crimeDao = database.crimesDao
 
     private val dispatcher = Dispatchers.IO
+
+    private val filesDir = context.applicationContext.filesDir
 
     fun getAllCrimes() = crimeDao.getAllCrimes()
 
@@ -62,9 +65,12 @@ class CrimeRepository private constructor(val context: Context) {
         return result
     }
 
+    fun getPhotoFile(crime : Crime)= File(filesDir,crime.photoFileName)
 
     companion object {
         private const val DATABASE_NAME = "crime-database"
+
+        @SuppressLint("StaticFieldLeak")
         private var INSTANCE: CrimeRepository? = null
 
         fun initialize(context: Context) {

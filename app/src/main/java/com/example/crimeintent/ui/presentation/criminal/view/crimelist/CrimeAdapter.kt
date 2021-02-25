@@ -1,5 +1,6 @@
 package com.example.crimeintent.ui.presentation.criminal.view.crimelist
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -24,6 +25,8 @@ class CrimeAdapter(var callback: CrimeListFragment.Callbacks?=null)
     override fun getItemCount() = crimes.size
 
     fun bindCrime(data : List<Crime>){
+        Log.d("AAA",data.size.toString())
+        crimes =data
         val diffUtillCallback = DiffUtillCallback(oldList = crimes,newList = data)
         val diffResult : DiffUtil.DiffResult = DiffUtil.calculateDiff(diffUtillCallback)
         diffResult.dispatchUpdatesTo(this)

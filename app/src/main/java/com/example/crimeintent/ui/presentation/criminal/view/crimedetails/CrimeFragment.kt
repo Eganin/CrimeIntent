@@ -1,5 +1,6 @@
 package com.example.crimeintent.ui.presentation.criminal.view.crimedetails
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -7,30 +8,37 @@ import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.crimeintent.R
 import com.example.crimeintent.data.model.entities.Crime
 import com.example.crimeintent.ui.presentation.criminal.viewmodel.CrimeDetailViewModel
 import android.text.format.DateFormat
+import android.widget.*
+import androidx.core.content.FileProvider
+import com.example.crimeintent.ui.presentation.criminal.utils.puctureutils.getScaledBitmap
+import java.io.File
 import java.util.*
 
 class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Callbacks,
     TimePickerFragment.Callbacks {
 
     private lateinit var crime: Crime
+    private lateinit var photoFile: File
+    private lateinit var photoUri: Uri
+
     private var titleField: EditText? = null
     private var dateButton: Button? = null
     private var solvedCheckBox: CheckBox? = null
     private var timeButton: Button? = null
     private var suspectButton: Button? = null
     private var reportButton: Button? = null
+    private var photoButton: ImageButton? = null
+    private var photoView: ImageView? = null
 
     private val crimeDetailViewModel: CrimeDetailViewModel by lazy {
         ViewModelProvider(this)[CrimeDetailViewModel::class.java]
@@ -49,11 +57,17 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         crimeDetailViewModel.crimeLiveData.observe(viewLifecycleOwner, {
             it?.let { crime ->
                 this.crime = crime
+                photoFile = crimeDetailViewModel.getPhotoFile(crime = crime)
+                photoUri = FileProvider.getUriForFile(
+                    requireActivity(),
+                    "com.example.crimeintent.fileprovider",
+                    photoFile
+                )
                 updateUI()
             }
         })
 
-        crimeDetailViewModel.crimeSuspect.observe(viewLifecycleOwner ,this::updateSuspect)
+        crimeDetailViewModel.crimeSuspect.observe(viewLifecycleOwner, this::updateSuspect)
     }
 
     override fun onStop() {
@@ -79,13 +93,27 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         solvedCheckBox = null
         reportButton = null
         suspectButton = null
+        photoButton = null
+        photoView = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        // отзыв разрешения
+        requireActivity().revokeUriPermission(photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
             resultCode != Activity.RESULT_OK -> return
             requestCode == REQUEST_CONTACT && data != null -> getSuspect(data = data)
-
+            requestCode == REQUEST_PHOTO -> {
+                requireActivity().revokeUriPermission(
+                    photoUri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                updatePhotoView()
+            }
         }
     }
 
@@ -96,8 +124,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         timeButton = view.findViewById(R.id.crime_time)
         reportButton = view.findViewById(R.id.crime_report)
         suspectButton = view.findViewById(R.id.crime_suspect)
+        photoButton = view.findViewById(R.id.crime_camera)
+        photoView = view.findViewById(R.id.crime_photo)
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     private fun setupListeners() {
         dateButton?.setOnClickListener {
             DatePickerFragment.newInstance(crime.date).apply {
@@ -155,6 +186,29 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
 
         }
 
+        photoButton?.apply {
+            val captureImage = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            isEnabled = checkIntent(intent = captureImage)
+            setOnClickListener {
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+
+                val cameraActivities = requireActivity().packageManager.queryIntentActivities(
+                    captureImage,
+                    PackageManager.MATCH_DEFAULT_ONLY
+                )
+
+                for (activity in cameraActivities) {
+                    requireActivity().grantUriPermission(
+                        activity.activityInfo.packageName,
+                        photoUri,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
+                }
+
+                startActivityForResult(captureImage, REQUEST_PHOTO)
+            }
+        }
+
     }
 
     private fun updateUI() {
@@ -167,6 +221,16 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
             jumpDrawablesToCurrentState()
         }
         if (crime.suspect.isNotEmpty()) suspectButton?.text = crime.suspect
+        updatePhotoView()
+    }
+
+    private fun updatePhotoView() {
+        if (photoFile.exists()) {
+            val bitmap = getScaledBitmap(path = photoFile.path, activity = requireActivity())
+            photoView?.setImageBitmap(bitmap)
+        } else {
+            photoView?.setImageDrawable(null)
+        }
     }
 
     private fun getCrimeReport(): String {
@@ -183,27 +247,28 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), DatePickerFragment.Call
         return getString(R.string.crime_report, crime.title, dateTime, solved, suspect)
     }
 
-    private fun getSuspect(data: Intent?) = crimeDetailViewModel.getSuspect(data=data)
+    private fun getSuspect(data: Intent?) = crimeDetailViewModel.getSuspect(data = data)
 
 
-    private fun updateSuspect(data : String?){
+    private fun updateSuspect(data: String?) {
         crime.apply {
-            suspect = data ?:""
+            suspect = data ?: ""
         }
         crimeDetailViewModel.saveCrime(crime = crime)
         suspectButton?.text = crime.suspect
     }
 
-    private fun checkIntent(intent: Intent) : Boolean {
+    private fun checkIntent(intent: Intent): Boolean {
         val packageManager: PackageManager = requireActivity().packageManager
         val resolvedActivity: ResolveInfo? =
             packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        return resolvedActivity != null
+        return resolvedActivity == null
     }
 
     companion object {
         private const val REQUEST_TIME = 1
         private const val REQUEST_DATE = 0
+        private const val REQUEST_PHOTO = 3
         private const val DIALOG_DATE = "DialogDate"
         private const val DIALOG_TIME = "DialogTime"
         const val ARG_CRIME_ID = "crime_id"
